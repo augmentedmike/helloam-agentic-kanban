@@ -11,7 +11,7 @@
 
 > **If this is useful to you — [⭐ Star the repo](https://github.com/augmentedmike/am-agi). It costs nothing and helps more people find it.**
 
-## AM — A gated agent runtime with a Kanban prefrontal cortex
+## AM — Gated Task Execution Framework with Git-Driven Auditing
 ![helloam.bot hero screenshot](docs/screenshots/helloam-hero.png)
 
 ## AM — Worktree isolation and deterministic CLI
@@ -105,15 +105,17 @@ Docs:
 
 ---
 
-## Philosophy
+## Design Principles
 
-Claude Code is the incubator, and after step 3 it becomes just a tool in AM's toolbelt. AM is the intelligence, the persistence, the memory, the "being" — Anthropic or other models are just those random thoughts in your own head. They aren't YOU.
+AM is engineered around strict software design and operational principles to ensure reliable, deterministic execution:
 
-AM is a cognitive architecture, not just random thoughts. A mix of engineering (creating analogs for brain regions) and research.
-
-> I got tired of agents that do things I didn't ask for. So I rewrote it.
->
-> This is the real system — not a demo, not a toy, not another LangChain wrapper with a readme that promises AGI. Memory lives on your machine. Inference goes out over HTTPS. Every state change is a git commit. You can read all of it in an afternoon.
+- **State-Driven Determinism:** All process states live explicitly in a validated state machine (represented as a Kanban board). The model does not manage state; the system validates transitions.
+- **Durable Task Isolation:** Each active card or task operates in a separate Git worktree. This prevents state contamination and enables true parallelized, async workflows.
+- **Auditable & Traceable History:** Every action and state transition is captured as an auditable Git commit, making all system-generated changes reproducible and inspectable.
+- **Structured Multi-Tier Context:** Implements strict tiering of context storage:
+  - *Local Rules (Working Context):* Stateless rule files loaded dynamically.
+  - *Indexed Knowledge (Persistent Context):* SQLite Full-Text Search (FTS5) for on-demand knowledge retrieval.
+  - *Episodic Log (Git History):* Execution logs committed per iteration to prevent repetitive errors.
 
 ---
 
