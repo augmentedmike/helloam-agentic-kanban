@@ -555,6 +555,37 @@ export async function runCard(card: Card, deps: RunCardDeps = {}): Promise<void>
         }),
       }).catch(() => {});
     }
+
+    // Record iteration summary in the database
+    const iterDir = join(dir, "iter");
+    const iterN = existsSync(iterDir)
+      ? Math.max(0, ...readdirSync(iterDir).map(d => parseInt(d, 10)).filter(n => !isNaN(n)))
+      : 0;
+    if (iterN > 0) {
+      const agentLogPath = join(iterDir, String(iterN), "agent.log");
+      let logText = '';
+      if (existsSync(agentLogPath)) {
+        logText = readFileSync(agentLogPath, 'utf8');
+      }
+      // Get commit SHA from the worktree
+      let commitSha = '';
+      try {
+        const gitLog = spawnSync('git', ['log', '-1', '--format=%H'], { cwd: dir, encoding: 'utf8' });
+        if (gitLog.status === 0) commitSha = gitLog.stdout.trim();
+      } catch {}
+      if (logText) {
+        const boardUrl = process.env.BOARD_URL ?? "http://localhost:4220";
+        fetch(`${boardUrl}/api/cards/${card.id}/iterations`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            iterationNumber: iterN,
+            logText,
+            commitSha: commitSha || undefined,
+          }),
+        }).catch((e) => console.error('[dispatch] failed to record iteration:', e));
+      }
+    }
   } catch (err) {
     if (err instanceof RateLimitError) {
       rateLimitUntil = err.resetAt.getTime();
