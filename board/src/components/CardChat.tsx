@@ -114,10 +114,7 @@ export function CardChat({ cardId, cardState }: { cardId: string; cardState: str
       }
       setText('');
       setFiles([]);
-      if (textareaRef.current) {
-        textareaRef.current.style.height = 'auto';
-        textareaRef.current.focus();
-      }
+      if (textareaRef.current) textareaRef.current.style.height = 'auto';
       await fetchMessages();
     } catch {
       setError('Network error — try again.');

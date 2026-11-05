@@ -22,5 +22,4 @@ export const patchSchema = z.object({
   deps: z.array(z.string()).optional(),
   cardType: z.enum(['task', 'lead', 'account', 'candidate', 'contact', 'ticket']).optional(),
   entityFields: z.record(z.string(), z.union([z.string(), z.number(), z.null()])).optional(),
-  scheduledAt: z.string().nullable().optional(),
 });

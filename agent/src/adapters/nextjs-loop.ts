@@ -1,8 +1,8 @@
-import { readFile, access, writeFile, appendFile, mkdir } from "node:fs/promises";
+import { readFile, access } from "node:fs/promises";
 import { existsSync, statSync, mkdtempSync, writeFileSync, rmSync, readdirSync, appendFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { resolveAdapter, type AdapterInvokeOptions } from "../loop/adapter";
+import { invokeClaude, type InvokeOptions } from "./nextjs";
 import { loadContext } from "../loop/load-context";
 import { buildPrompt } from "../loop/build-prompt";
 import { buildSystemPrompt } from "../loop/system-prompt";
@@ -26,18 +26,6 @@ class NodeFileSystem implements FileSystem {
     } catch {
       return false;
     }
-  }
-
-  async writeFile(path: string, content: string): Promise<void> {
-    await writeFile(path, content, "utf8");
-  }
-
-  async appendFile(path: string, content: string): Promise<void> {
-    await appendFile(path, content, "utf8");
-  }
-
-  async mkdir(path: string): Promise<void> {
-    await mkdir(path, { recursive: true });
   }
 }
 
@@ -79,7 +67,7 @@ function appendUsageToIterLog(workDir: string, usage: ClaudeUsage): void {
  */
 export async function runIteration(
   workDir: string,
-  options: AdapterInvokeOptions = {},
+  options: InvokeOptions = {},
 ): Promise<ClaudeResult> {
   // Safety: a git worktree has .git as a FILE; the main repo has .git as a DIRECTORY.
   // Refuse to run if workDir is the main repo root — task artifacts must stay in worktrees.
@@ -117,8 +105,7 @@ export async function runIteration(
   const prompt = buildPrompt(ctx);
   const repoRoot = workDir;
   const systemPrompt = options.systemPrompt ?? buildSystemPrompt(repoRoot, preferredSearchProvider);
-  const adapter = resolveAdapter(process.env);
-  const adapterResult = await adapter.invoke(workDir, prompt, { ...options, systemPrompt, mcpConfigPath });
+  const result = await invokeClaude(workDir, prompt, { ...options, systemPrompt, mcpConfigPath });
 
   // Cleanup temp mcp dir
   if (tempMcpDir) {
@@ -126,19 +113,6 @@ export async function runIteration(
   }
 
   // 4. LOG context usage + EXIT
-  const result: ClaudeResult = {
-    exitCode: adapterResult.exitCode,
-    result: adapterResult.result,
-    usage: adapterResult.usage
-      ? {
-          input_tokens: adapterResult.usage.inputTokens,
-          output_tokens: adapterResult.usage.outputTokens,
-          cache_read_input_tokens: adapterResult.usage.cacheReadTokens,
-          cache_creation_input_tokens: adapterResult.usage.cacheWriteTokens,
-        }
-      : undefined,
-  };
-
   if (result.usage) {
     appendUsageToIterLog(workDir, result.usage);
   }

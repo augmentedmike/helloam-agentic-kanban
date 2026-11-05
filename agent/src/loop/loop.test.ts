@@ -185,10 +185,9 @@ describe("runIteration (integration)", () => {
     const chmod = Bun.spawn(["chmod", "+x", fakeClaude]);
     await chmod.exited;
 
-    // Import runIteration with the fake claude passed via ClaudeAdapter constructor
+    // Import runIteration with the fake claude on PATH
     const { runIteration } = await import("./index");
-    const { ClaudeAdapter } = await import("./adapters/claude");
-    const result = await runIteration(dir, { agentAdapter: new ClaudeAdapter(undefined, fakeClaude) });
+    const result = await runIteration(dir, { claudePath: fakeClaude });
     expect(result.exitCode).toBe(0);
 
     const recorded = await Bun.file(argsFile).text();
@@ -210,8 +209,7 @@ describe("runIteration (integration)", () => {
     await chmod.exited;
 
     const { runIteration } = await import("./index");
-    const { ClaudeAdapter } = await import("./adapters/claude");
-    await runIteration(dir, { agentAdapter: new ClaudeAdapter(undefined, fakeClaude) });
+    await runIteration(dir, { claudePath: fakeClaude });
 
     const recorded = (await Bun.file(cwdFile).text()).trim();
     expect(recorded).toBe(dir);

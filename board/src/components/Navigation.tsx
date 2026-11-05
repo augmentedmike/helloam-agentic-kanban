@@ -6,7 +6,6 @@ import { ProjectSelector } from './ProjectSelector';
 import { useLocale } from '@/contexts/LocaleContext';
 import type { Project } from '@/contexts/ProjectsContext';
 
-
 function semverDesc(a: string, b: string): number {
   const parse = (v: string) => v.replace(/^v/, '').split('.').map(n => parseInt(n, 10) || 0);
   const [a0, a1, a2] = parse(a);
@@ -16,49 +15,22 @@ function semverDesc(a: string, b: string): number {
 
 function VersionBadge({ project }: { project: Project }) {
   const [versions, setVersions] = useState<string[]>([]);
-  const [selected, setSelected] = useState<string>(project.currentVersion ?? '');
   const [saving, setSaving] = useState(false);
-  const selectedRef = useRef(selected);
-  selectedRef.current = selected;
-
-  // Sync local selected state when project.currentVersion changes externally
-  useEffect(() => {
-    setSelected(project.currentVersion ?? '');
-  }, [project.currentVersion]);
 
   useEffect(() => {
     if (!project.versioned) return;
-    let cancelled = false;
-
-    async function fetchVersions() {
-      try {
-        const data: { versions: string[]; currentVersion: string | null } =
-          await fetch(`/api/projects/${project.id}/versions`).then(r => r.json());
-        if (cancelled) return;
+    fetch(`/api/projects/${project.id}/versions`)
+      .then(r => r.json())
+      .then((data: { versions: string[]; currentVersion: string | null }) => {
         const sorted = [...data.versions].sort(semverDesc);
         setVersions(sorted);
-        // Auto-select newest version if it's newer than what's currently selected
-        if (sorted.length > 0 && semverDesc(sorted[0], selectedRef.current || '') < 0) {
-          const newest = sorted[0];
-          setSelected(newest);
-          await fetch(`/api/projects/${project.id}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ currentVersion: newest }),
-          });
-        }
-      } catch {}
-    }
-
-    fetchVersions();
-    const interval = setInterval(fetchVersions, 15000);
-    return () => { cancelled = true; clearInterval(interval); };
-  }, [project.id, project.versioned]);
+      })
+      .catch(() => {});
+  }, [project.id, project.versioned, project.currentVersion]);
 
   async function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const v = e.target.value;
-    if (!v || v === selected) return;
-    setSelected(v);
+    if (!v || v === project.currentVersion) return;
     setSaving(true);
     try {
       await fetch(`/api/projects/${project.id}`, {
@@ -73,11 +45,11 @@ function VersionBadge({ project }: { project: Project }) {
 
   if (!project.versioned) return null;
 
-  const options = versions.length > 0 ? versions : (selected ? [selected] : []);
+  const options = versions.length > 0 ? versions : (project.currentVersion ? [project.currentVersion] : []);
 
   return (
     <select
-      value={selected}
+      value={project.currentVersion ?? ''}
       onChange={handleChange}
       disabled={saving || options.length === 0}
       title="Current version"
@@ -139,18 +111,17 @@ export function Navigation({
   const [taglineFade, setTaglineFade] = useState(true);
 
   const TAGLINES = [
-    'Your persistent digital worker — context, tasks, and shipping, all in one place.',
-    'Owns outcomes. Not just tickets.',
-    'Remembers context between sessions. Ships real work.',
-    'Autonomous. Persistent. Yours.',
-    'Not just tracking work. Owning it.',
-    'Memory, kanban, git — the architecture of getting things done.',
-    'A digital worker that finishes what it starts.',
-    'From context to shipped, automatically.',
-    'Autonomous execution, human judgement.',
-    'Your agent. Your memory. Your codebase.',
+    'The project management board that does its own work.',
+    'Ship faster. AM handles the rest.',
+    'Not just tracking work. Doing it.',
+    'From backlog to shipped, automatically.',
+    'The team that never sleeps.',
+    'Plans, reviews, deploys — all in one place.',
+    'Outreach, code, support — AM\'s got it.',
+    'Kanban that actually closes tickets.',
+    'Let the board work for you.',
+    'Your board. Your agent. Your codebase.',
   ];
-
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -175,8 +146,6 @@ export function Navigation({
     scheduleWiggle();
     return () => { if (wiggleTimer.current) clearTimeout(wiggleTimer.current); };
   }, [totalCards]);
-
-  const selectedProject = projects.find(x => x.id === selectedProjectId);
 
   return (
     <header className="shrink-0 px-3 sm:px-6 py-2 sm:py-2.5 border-b border-border bg-surface/80 backdrop-blur-sm relative z-50">
@@ -246,7 +215,10 @@ export function Navigation({
             onProjectCreated={onProjectCreated}
             onOpenProjectSettings={(id) => { switchProject(id); openSettings(); }}
           />
-          {selectedProject?.versioned ? <VersionBadge key={selectedProject.id} project={selectedProject} /> : null}
+          {(() => {
+            const p = projects.find(x => x.id === selectedProjectId);
+            return p?.versioned ? <VersionBadge key={p.id} project={p} /> : null;
+          })()}
         </div>
       </div>
       {showNewForm && (

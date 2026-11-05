@@ -11,8 +11,8 @@ const BOARD_URL = 'https://board.helloam.bot';
 export const metadata: Metadata = {
   metadataBase: new URL(BOARD_URL),
   title: 'AM Board',
-  description: 'Gated agent runtime for engineering teams — kanban prefrontal cortex with server-side gate verification.',
-  keywords: ['kanban', 'gated state machine', 'agent runtime', 'AI engineering', 'AM', 'helloam'],
+  description: 'The project management board that does its own work.',
+  keywords: ['kanban', 'project management', 'AI agent', 'task board', 'AM', 'helloam'],
   alternates: { canonical: BOARD_URL },
   icons: {
     icon: [
@@ -27,13 +27,13 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'AM Board',
-    description: 'Gated agent runtime for engineering teams — kanban prefrontal cortex with server-side gate verification.',
+    description: 'The project management board that does its own work.',
     images: [{ url: '/api/og', width: 1200, height: 630 }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'AM Board',
-    description: 'Gated agent runtime for engineering teams — kanban prefrontal cortex with server-side gate verification.',
+    description: 'The project management board that does its own work.',
     images: ['/api/og'],
   },
 };
@@ -42,9 +42,9 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
   name: 'AM Board',
-  description: 'Gated agent runtime for engineering teams — kanban prefrontal cortex with server-side gate verification.',
+  description: 'The project management board that does its own work.',
   url: BOARD_URL,
-  applicationCategory: 'DeveloperApplication',
+  applicationCategory: 'BusinessApplication',
   operatingSystem: 'Web',
   offers: { '@type': 'Offer', price: '0' },
 };

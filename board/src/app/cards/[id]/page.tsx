@@ -18,10 +18,10 @@ async function getCard(id: string) {
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
   const card = await getCard(id);
-  const title = card ? `${card.title} — AM` : 'Card — AM';
+  const title = card ? `${card.title} — AM Board` : 'Card — AM Board';
   const description = card
     ? `${card.title} · ${card.state} · ${card.priority} priority`
-    : 'View this card on AM.';
+    : 'View this card on AM Board.';
   return {
     title,
     description,

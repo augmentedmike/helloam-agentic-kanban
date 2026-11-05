@@ -194,11 +194,9 @@ node_modules/
 `,
     );
 
-    if (process.env.AM_SKIP_TEMPLATE_INSTALL !== '1') {
-      const install = spawnSync('bun', ['install'], { cwd: dest, stdio: 'inherit' });
-      if (install.status !== 0) {
-        process.stderr.write('warning: bun install failed — run it manually\n');
-      }
+    const install = spawnSync('bun', ['install'], { cwd: dest, stdio: 'inherit' });
+    if (install.status !== 0) {
+      process.stderr.write('warning: bun install failed — run it manually\n');
     }
   },
 };

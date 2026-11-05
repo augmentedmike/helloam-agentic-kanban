@@ -9,7 +9,7 @@ import { join } from "node:path";
 import { readdirSync, appendFileSync, existsSync, statSync, writeFileSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import type { ClaudeResult, ClaudeUsage } from "./types";
-import type { AgentAdapter, AgentSettings } from "./adapter";
+import type { AgentAdapter } from "./adapter";
 import { resolveAdapter, queryAdapter } from "./adapter";
 
 const CONTEXT_LIMIT_TOKENS = 200_000; // Sonnet 4.6
@@ -50,15 +50,12 @@ function appendUsageToIterLog(workDir: string, usage: ClaudeUsage): void {
 export type { WorkContext } from "./types";
 export type { ClaudeResult } from "./types";
 export type { FileSystem } from "./filesystem";
-export type { AgentAdapter, AdapterInvokeOptions, AdapterResult, AdapterUsage, StreamChunk, AdapterCapabilities } from "./adapter";
+export type { AgentAdapter, AdapterInvokeOptions, AdapterResult } from "./adapter";
 export { resolveAdapter, queryAdapter } from "./adapter";
-export { ProviderAuthError, ProviderRateLimitError, ProviderTimeoutError } from "./errors";
 export { BunFileSystem } from "./filesystem";
 export { loadContext, loadDomainContext } from "./load-context";
 export { buildPrompt } from "./build-prompt";
 export { invokeClaude, RateLimitError, parseRateLimitReset } from "./invoke-claude";
-export { ClaudeCodeAdapter } from "./adapters/claude-code";
-export { CodexAdapter } from "./adapters/codex";
 export type { StorageLayer } from "./storage";
 
 /**
@@ -71,7 +68,7 @@ export type { StorageLayer } from "./storage";
  *   4. EXIT        — return the result
  *
  * @param workDir  Absolute path to the git worktree for this task.
- * @param options  Optional overrides (e.g. agentAdapter for testing).
+ * @param options  Optional overrides (e.g. claudePath for testing).
  * @param adapter  Optional model adapter. Defaults to the adapter resolved from
  *                 environment variables via `resolveAdapter()`.
  */
@@ -82,12 +79,8 @@ export type { PortfolioDomainContext, PostEntry } from "./portfolio-content-adap
 
 export async function runIteration(
   workDir: string,
-  options: InvokeOptions & { adapter?: ProjectAdapter; agentAdapter?: AgentAdapter; agentSettings?: AgentSettings } = {},
+  options: InvokeOptions & { adapter?: ProjectAdapter; agentAdapter?: AgentAdapter } = {},
 ): Promise<ClaudeResult> {
-  if (!existsSync(workDir)) {
-    throw new Error(`workDir does not exist: ${workDir}`);
-  }
-
   // Safety: a git worktree has .git as a FILE; the main repo has .git as a DIRECTORY.
   // Refuse to run if workDir is the main repo root — task artifacts must stay in worktrees.
   const gitEntry = join(workDir, ".git");
@@ -123,7 +116,7 @@ export async function runIteration(
   }
 
   // 3. DOMAIN CTX — load adapter-specific domain context if available
-  const { adapter, agentAdapter, agentSettings, ...invokeOptions } = options;
+  const { adapter, agentAdapter, ...invokeOptions } = options;
 
   // Lifecycle: init() before any prompt building
   if (adapter?.init) {
@@ -148,17 +141,14 @@ export async function runIteration(
       : buildSystemPrompt(repoRoot, preferredSearchProvider)
   );
 
-  let resolvedAdapter = agentAdapter ?? queryAdapter(workDir, process.env, agentSettings);
-  if (!agentAdapter && invokeOptions.claudePath) {
-    const { ClaudeAdapter } = await import("./adapters/claude");
-    resolvedAdapter = new ClaudeAdapter(undefined, invokeOptions.claudePath);
-  }
+  const resolvedAdapter = agentAdapter ?? queryAdapter(workDir, process.env);
   let adapterResult: Awaited<ReturnType<typeof resolvedAdapter.invoke>>;
   try {
     adapterResult = await resolvedAdapter.invoke(workDir, prompt, {
       systemPrompt,
       mcpConfigPath,
       onEvent: invokeOptions.onEvent,
+      claudePath: invokeOptions.claudePath,
     });
   } finally {
     if (adapter?.close) {

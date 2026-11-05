@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb } from '@/db/client';
 import { getAllSettings, setSetting } from '@/db/settings';
-import { getInstallDirTilde } from '@/lib/install-dir';
 import { eq } from 'drizzle-orm';
 import { settings as settingsTable } from '@/db/schema';
 
@@ -26,17 +25,8 @@ export async function GET() {
       all.hidden_projects = '["am-board-0000-0000-0000-000000000000"]';
     }
   }
-  // Mask secrets in response. install_dir is read-only — derived from the
-  // installer-provided AM_INSTALL_DIR env var, not stored in the DB.
-  const safe = {
-    ...all,
-    install_dir: getInstallDirTilde(),
-    github_token: all.github_token ? '***' : '',
-    codex_api_key: all.codex_api_key ? '***' : '',
-    hermes_api_key: all.hermes_api_key ? '***' : '',
-    deepseek_api_key: all.deepseek_api_key ? '***' : '',
-    qwen_api_key: all.qwen_api_key ? '***' : '',
-  };
+  // Mask token in response — send a boolean instead of the value
+  const safe = { ...all, github_token: all.github_token ? '***' : '' };
   return NextResponse.json(safe);
 }
 
@@ -47,13 +37,6 @@ export async function PATCH(req: NextRequest) {
     if (typeof value === 'string') setSetting(db, key, value);
   }
   const all = getAllSettings(db);
-  const safe = {
-    ...all,
-    github_token: all.github_token ? '***' : '',
-    codex_api_key: all.codex_api_key ? '***' : '',
-    hermes_api_key: all.hermes_api_key ? '***' : '',
-    deepseek_api_key: all.deepseek_api_key ? '***' : '',
-    qwen_api_key: all.qwen_api_key ? '***' : '',
-  };
+  const safe = { ...all, github_token: all.github_token ? '***' : '' };
   return NextResponse.json(safe);
 }

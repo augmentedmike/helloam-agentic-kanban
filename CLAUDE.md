@@ -20,7 +20,7 @@ All process actions go through CLI. Agents never write to board files directly.
 |---|---|
 | `board create --title <title> [--priority critical\|high\|normal\|low] [--attach <path>...]` | Create a card (starts in `backlog`) |
 | `board move <id> <state>` | Transition a card — gates enforced |
-| `board update <id> [--title <title>] [--priority <priority>] [--log <msg>] [--attach <path>...] [--scheduled-at <ISO8601>]` | Update fields / append work log / schedule card on calendar |
+| `board update <id> [--title <title>] [--priority <priority>] [--log <msg>] [--attach <path>...]` | Update fields / append work log |
 | `board show <id>` | Print full card content |
 | `board search [--state <state>] [--priority <priority>] [--text <query>] [--all]` | Query cards |
 | `board archive <id> [--reason <msg>]` | Move card to `board/archive/` |
@@ -33,15 +33,6 @@ All process actions go through CLI. Agents never write to board files directly.
 | `memory recall "query" [--limit <n>]` | Retrieve relevant memories (ST always + LT ranked search) |
 | `memory list [--st\|--lt]` | List all memories |
 | `memory rm <slug-or-id>` | Delete a memory |
-| `deslop [file ...]` | Clean AI slop from changed files (auto-detects git-changed files if no args) |
-
-## Calendar
-
-The AM board **has a built-in calendar**. Do NOT use Google Calendar, Google Calendar MCP, or ask Mike to authenticate any external calendar service. Ever.
-
-To schedule a card: `board update <id> --scheduled-at <ISO8601>`
-
-Cards with a `scheduledAt` appear on the board calendar automatically. That's it.
 
 ## Kanban State Machine
 
@@ -87,7 +78,7 @@ git worktree add worktrees/<task-slug> -b <task-slug>
 |---|---|
 | backlog | Research, read docs, gather context, write `criteria.md` |
 | in-progress | Write code, create files, make changes |
-| in-review | **First:** run `deslop` on changed files (automatic slop pass). **Then:** run tests, verify each criterion in `criteria.md` |
+| in-review | Run tests, verify each criterion in `criteria.md` |
 | shipped | Trigger post hook |
 
 ## Branch Model

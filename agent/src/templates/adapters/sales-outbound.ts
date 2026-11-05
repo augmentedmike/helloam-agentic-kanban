@@ -1,8 +1,3 @@
-// DEPRECATED: Business-function template adapter. AM is now positioned as
-// a gated agent runtime for engineering and AI specialist work. This adapter
-// is retained for backward compatibility but not exposed in the default
-// TEMPLATE_TYPES list. May be removed in a future release.
-
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -317,7 +312,7 @@ export async function POST(req: Request) {
 
 const SAMPLE_LEADS = [
   { name: "Priya Sharma", company: "Acme Corp", title: "VP of Engineering", email: "priya@acme.example" },
-  { name: "James Okafor", company: "Buildly", title: "Engineering Lead", email: "james@buildly.example" },
+  { name: "James Okafor", company: "Buildly", title: "CTO", email: "james@buildly.example" },
   { name: "Sofia Reyes", company: "Stackwise", title: "Head of Product", email: "sofia@stackwise.example" },
   { name: "Chen Wei", company: "DataFlow", title: "Director of Operations", email: "chen@dataflow.example" },
 ];
@@ -364,11 +359,9 @@ export function LeadTable({ onSelect, selected }: Props) {
 `,
     );
 
-    if (process.env.AM_SKIP_TEMPLATE_INSTALL !== '1') {
-      const install = spawnSync('bun', ['install'], { cwd: dest, stdio: 'inherit' });
-      if (install.status !== 0) {
-        process.stderr.write('warning: bun install failed — run it manually\n');
-      }
+    const install = spawnSync('bun', ['install'], { cwd: dest, stdio: 'inherit' });
+    if (install.status !== 0) {
+      process.stderr.write('warning: bun install failed — run it manually\n');
     }
   },
 };

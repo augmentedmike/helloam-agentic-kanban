@@ -22,8 +22,6 @@ import { useNewCard, NewCardProvider } from '@/contexts/NewCardContext';
 import { useTeamPanel, TeamPanelProvider } from '@/contexts/TeamPanelContext';
 import { useMilestonePlanner, MilestonePlannerProvider } from '@/contexts/MilestonePlannerContext';
 import { useCalendar, CalendarProvider } from '@/contexts/CalendarContext';
-import { CalendarSteeringProvider } from '@/contexts/CalendarSteeringContext';
-import { CalendarSteeringPanel } from './CalendarSteeringPanel';
 import { useLocale } from '@/contexts/LocaleContext';
 import { OnboardingWizard } from './OnboardingWizard';
 import { MobileModalStackProvider, useMobileModalStack } from '@/contexts/MobileModalStackContext';
@@ -61,7 +59,7 @@ function BoardInner() {
 
   const selectedProject = projects.find(p => p.id === selectedProjectId) ?? null;
   const hasGit = !!(selectedProject?.repoDir || selectedProject?.githubRepo);
-  const isCalendarProject = true; // calendar is available for all projects
+  const isCalendarProject = !!(selectedProject?.templateType && CONTENT_TEMPLATE_TYPES.has(selectedProject.templateType));
 
   useEffect(() => {
     function loadSettings() {
@@ -234,12 +232,13 @@ function BoardInner() {
         projectName={projects.find(p => p.id === selectedProjectId)?.name ?? ''}
         onClose={() => { closeMilestonePlanner(); removeModal('milestone'); }}
       />
-      <CalendarPanel
-        open={showCalendar}
-        projectId={selectedProjectId}
-        onClose={closeCalendar}
-      />
-      <CalendarSteeringPanel />
+      {isCalendarProject && (
+        <CalendarPanel
+          open={showCalendar}
+          projectId={selectedProjectId}
+          onClose={closeCalendar}
+        />
+      )}
       <SettingsPanel
         open={showSettings}
         onClose={() => { setShowSettings(false); removeModal('settings'); }}
@@ -285,11 +284,9 @@ export function BoardClient({ initialCards, initialProjectId = null }: { initial
             <TeamPanelProvider>
               <MilestonePlannerProvider>
                 <CalendarProvider>
-                  <CalendarSteeringProvider>
-                    <MobileModalStackProvider>
-                      <BoardInner />
-                    </MobileModalStackProvider>
-                  </CalendarSteeringProvider>
+                  <MobileModalStackProvider>
+                    <BoardInner />
+                  </MobileModalStackProvider>
                 </CalendarProvider>
               </MilestonePlannerProvider>
             </TeamPanelProvider>

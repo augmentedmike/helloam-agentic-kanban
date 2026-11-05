@@ -26,17 +26,17 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const name = project?.name ?? 'Project Board';
   const ogUrl = `/api/og?projectId=${encodeURIComponent(id)}`;
   return {
-    title: `${name} · AM`,
-    description: `Kanban board for ${name} — managed by AM, your persistent digital worker.`,
+    title: `${name} · HelloAm!`,
+    description: `Kanban board for ${name}`,
     openGraph: {
-      title: `${name} · AM`,
-      description: `Kanban board for ${name} — managed by AM, your persistent digital worker.`,
+      title: `${name} · HelloAm!`,
+      description: `Kanban board for ${name}`,
       images: [{ url: ogUrl, width: 1200, height: 630 }],
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${name} · AM`,
-      description: `Kanban board for ${name} — managed by AM, your persistent digital worker.`,
+      title: `${name} · HelloAm!`,
+      description: `Kanban board for ${name}`,
       images: [ogUrl],
     },
   };

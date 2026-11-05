@@ -2,7 +2,7 @@ import { describe, it, expect, afterEach } from 'bun:test';
 import { mkdtempSync, rmSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { getAdapter, TEMPLATE_TYPES, ALL_TEMPLATE_TYPES } from './index';
+import { getAdapter, TEMPLATE_TYPES } from './index';
 import { blankAdapter } from './adapters/blank';
 import { bunLibAdapter } from './adapters/bun-lib';
 import { nextAppAdapter } from './adapters/next-app';
@@ -18,28 +18,9 @@ import { knowledgeBaseAdapter } from './adapters/knowledge-base';
 import { communityAdapter } from './adapters/community';
 import { opsAdapter } from './adapters/ops';
 
-process.env.AM_SKIP_TEMPLATE_INSTALL = '1';
-
 function tmpDir(): string {
   return mkdtempSync(join(tmpdir(), 'am-template-test-'));
 }
-
-describe('TEMPLATE_TYPES (engineering-first default list)', () => {
-  it('contains only engineering templates', () => {
-    const engineering = ['next-app', 'bun-lib', 'blank', 'am-board'];
-    expect([...TEMPLATE_TYPES]).toEqual(engineering);
-  });
-});
-
-describe('ALL_TEMPLATE_TYPES (full registry including deprecated)', () => {
-  it('contains engineering and business-function templates', () => {
-    expect(ALL_TEMPLATE_TYPES).toContain('next-app');
-    expect(ALL_TEMPLATE_TYPES).toContain('sales-outbound');
-    expect(ALL_TEMPLATE_TYPES).toContain('customer-support');
-    expect(ALL_TEMPLATE_TYPES).toContain('content-marketing');
-    expect(ALL_TEMPLATE_TYPES).toContain('ops');
-  });
-});
 
 describe('getAdapter', () => {
   it('returns blank adapter', () => {
@@ -179,7 +160,7 @@ describe('next-app adapter', () => {
   });
 });
 
-describe('sales-outbound adapter (deprecated)', () => {
+describe('sales-outbound adapter', () => {
   let dest: string;
 
   afterEach(() => {
@@ -245,7 +226,7 @@ describe('sales-outbound adapter (deprecated)', () => {
   });
 });
 
-describe('customer-support adapter (deprecated)', () => {
+describe('customer-support adapter', () => {
   let dest: string;
 
   afterEach(() => {
@@ -293,7 +274,7 @@ describe('customer-support adapter (deprecated)', () => {
   });
 });
 
-describe('content-marketing adapter (deprecated)', () => {
+describe('content-marketing adapter', () => {
   let dest: string;
 
   afterEach(() => {
@@ -439,7 +420,7 @@ describe('am-board adapter', () => {
   });
 });
 
-describe('customer-success adapter (deprecated)', () => {
+describe('customer-success adapter', () => {
   let dest: string;
 
   afterEach(() => {
@@ -467,7 +448,7 @@ describe('customer-success adapter (deprecated)', () => {
   });
 });
 
-describe('hiring adapter (deprecated)', () => {
+describe('hiring adapter', () => {
   let dest: string;
 
   afterEach(() => {
@@ -495,7 +476,7 @@ describe('hiring adapter (deprecated)', () => {
   });
 });
 
-describe('partnerships adapter (deprecated)', () => {
+describe('partnerships adapter', () => {
   let dest: string;
 
   afterEach(() => {
@@ -523,7 +504,7 @@ describe('partnerships adapter (deprecated)', () => {
   });
 });
 
-describe('pr-outreach adapter (deprecated)', () => {
+describe('pr-outreach adapter', () => {
   let dest: string;
 
   afterEach(() => {
@@ -551,7 +532,7 @@ describe('pr-outreach adapter (deprecated)', () => {
   });
 });
 
-describe('knowledge-base adapter (deprecated)', () => {
+describe('knowledge-base adapter', () => {
   let dest: string;
 
   afterEach(() => {
@@ -579,7 +560,7 @@ describe('knowledge-base adapter (deprecated)', () => {
   });
 });
 
-describe('community adapter (deprecated)', () => {
+describe('community adapter', () => {
   let dest: string;
 
   afterEach(() => {
@@ -607,7 +588,7 @@ describe('community adapter (deprecated)', () => {
   });
 });
 
-describe('ops adapter (deprecated)', () => {
+describe('ops adapter', () => {
   let dest: string;
 
   afterEach(() => {

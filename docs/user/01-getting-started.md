@@ -2,12 +2,11 @@
 
 ## Requirements
 
+- An Anthropic Claude subscription ($20–$200/mo depending on usage)
 - Git, Node.js, Bun
 - macOS, Linux, or Windows (WSL or Git Bash for the bash scripts)
-- **Default (Claude provider):** An Anthropic Claude subscription ($20–$200/mo) and the Claude CLI
-- **Alternative providers:** Any OpenAI-compatible API (DeepSeek, Qwen, Ollama, etc.) — Claude CLI is not required. Set `AM_PROVIDER`, `AM_BASE_URL`, and `AM_API_KEY` environment variables before running the installer.
 
-The installers below will handle Node.js, Bun, and Git if they're missing. Claude CLI is installed automatically unless `AM_PROVIDER` is set to a non-`"claude"` value.
+The installers below will handle Node.js, Bun, and Git if they're missing.
 
 ---
 
@@ -47,32 +46,16 @@ claude /login
 
 Installs Task Scheduler tasks that start on login and restart on crash.
 
-### Using an alternative provider
-
-To skip Claude CLI installation and use a different model provider, set the env vars before running the installer:
-
-```bash
-export AM_PROVIDER=deepseek
-export AM_BASE_URL=https://api.deepseek.com/v1
-export AM_API_KEY=sk-your-key
-bash install.sh   # or the platform-specific installer
-```
-
-The onboarding wizard will prompt for API key verification instead of Anthropic login.
-
 ---
 
 ## What the installer does
 
-The installers set up AM as a **gated agent runtime for engineering and AI work**, with two persistent services:
-
+All three installers:
 1. Install Node.js, Bun, Git, and Claude CLI if missing
 2. Install board app dependencies
 3. Register and start two services:
-   - **am-board** — gated kanban web UI (the "prefrontal cortex") at `http://localhost:4200`. Every card transition is verified server-side before execution proceeds.
-   - **am-dispatcher** — agent runtime loop that picks up cards, executes work in isolated git worktrees (one per card), and commits every result with full audit trail and provenance.
-
-AM is not an IDE plugin or a chatbot overlay. It is a persistent, security-gated orchestration runtime: cards flow through a controlled state machine (backlog → in-progress → in-review → shipped), each transition gated by server-side verification. All agent output is git-committed and traceable.
+   - **am-board** — Kanban web UI at `http://localhost:4200`
+   - **am-dispatcher** — agent loop that picks up cards and runs AM
 
 After install, open `http://localhost:4200`.
 
@@ -104,7 +87,7 @@ Open `http://localhost:4200` on first visit. The OnboardingWizard walks you thro
 new-project my-app --template next-app
 ```
 
-Engineering templates: `blank`, `bun-lib`, `next-app`, `am-board`. The command scaffolds the workspace and opens the board.
+Available templates: `blank`, `bun-lib`, `next-app`. The command scaffolds the workspace and opens the board.
 
 ---
 
@@ -148,6 +131,6 @@ am/
 
 ## Next steps
 
-- [Core Concepts](02-core-concepts.md) — gated state machine, worktree isolation, git audit trail
+- [Core Concepts](02-core-concepts.md) — understand the three pillars
 - [Kanban & Cards](03-kanban-cards.md) — how tasks flow through the system
 - [Writing Good Work](09-writing-good-work.md) — how to write requirements AM can execute

@@ -1,6 +1,4 @@
 import type { ClaudeResult, ClaudeUsage } from "./types";
-import { existsSync, writeFileSync, unlinkSync } from "node:fs";
-import { join } from "node:path";
 
 // Serialize claude process startup to prevent concurrent OAuth token refresh
 // races. All invocations share this lock. Each caller holds it for
@@ -95,9 +93,9 @@ export function parseRateLimitReset(text: string): Date | null {
   const offsetMs = guess.getTime() - localAtGuess.getTime();
   let resetUtc = new Date(guess.getTime() + offsetMs);
 
-  // If the reset time is already past, the limit has already cleared — retry in 30s.
+  // If reset time is already past, push to tomorrow
   if (resetUtc <= now) {
-    return new Date(Date.now() + 30_000);
+    resetUtc = new Date(resetUtc.getTime() + 24 * 3_600_000);
   }
 
   return resetUtc;
@@ -154,11 +152,6 @@ export async function invokeClaude(
 ): Promise<ClaudeResult> {
   const claudePath = options.claudePath ?? "claude";
   const streaming = !!options.onEvent;
-
-  // Safety: verify workDir exists before spawning the subprocess.
-  if (!existsSync(workDir)) {
-    throw new Error(`workDir does not exist: ${workDir}`);
-  }
 
   // Acquire startup lock — wait for any previous spawn to finish its auth
   // window before we start. Release after STARTUP_HOLD_MS so the next caller
@@ -220,8 +213,6 @@ export async function invokeClaude(
       env: spawnEnv,
     },
   );
-  const pidFilePath = join(workDir, ".agent-pid");
-  writeFileSync(pidFilePath, String(proc.pid), "utf8");
 
   if (stdinContent !== null && proc.stdin) {
     proc.stdin.write(stdinContent);
@@ -269,7 +260,6 @@ export async function invokeClaude(
   ]);
 
   const exitCode = await proc.exited;
-  try { unlinkSync(pidFilePath); } catch { /* best-effort cleanup */ }
   const rawOutput = stdoutChunks.map((c) => decoder.decode(c, { stream: true })).join("") + decoder.decode();
   const stderrText = stderrChunks.map((c) => new TextDecoder().decode(c)).join("");
 

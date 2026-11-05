@@ -1,8 +1,3 @@
-// DEPRECATED: Business-function template adapter. AM is now positioned as
-// a gated agent runtime for engineering and AI specialist work. This adapter
-// is retained for backward compatibility but not exposed in the default
-// TEMPLATE_TYPES list. May be removed in a future release.
-
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -405,11 +400,9 @@ export function TicketList({ onSelect, selected }: Props) {
 `,
     );
 
-    if (process.env.AM_SKIP_TEMPLATE_INSTALL !== '1') {
-      const install = spawnSync('bun', ['install'], { cwd: dest, stdio: 'inherit' });
-      if (install.status !== 0) {
-        process.stderr.write('warning: bun install failed — run it manually\n');
-      }
+    const install = spawnSync('bun', ['install'], { cwd: dest, stdio: 'inherit' });
+    if (install.status !== 0) {
+      process.stderr.write('warning: bun install failed — run it manually\n');
     }
   },
 };

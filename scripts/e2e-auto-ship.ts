@@ -16,7 +16,7 @@ import { join, resolve, dirname } from "node:path";
 import { spawnSync } from "node:child_process";
 
 const BOARD_URL = "http://localhost:4200";
-const HELLOAM_WWW_DIR = process.env.HELLOAM_WWW_DIR ?? join(process.cwd(), '..', 'helloam-www');
+const HELLOAM_WWW_DIR = "/Users/michaeloneal/workspaces/helloam-www";
 const HELLOAM_GITHUB = "augmentedmike/helloam-www";
 const isDryRun = process.argv.includes("--dry-run");
 

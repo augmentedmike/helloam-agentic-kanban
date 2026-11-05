@@ -20,7 +20,7 @@ function getRepoDir(): string {
   // DB_PATH is e.g. /Users/foo/am/board/board.db — repo is two levels up
   const dbPath = process.env.DB_PATH ?? '';
   if (dbPath && dbPath.endsWith('/board.db')) return path.dirname(path.dirname(dbPath));
-  return path.resolve(process.cwd(), '..');
+  return '/Users/michaeloneal/am';
 }
 
 // ── Ship queue — serialize all ship-hooks so they never dogpile ──────────────

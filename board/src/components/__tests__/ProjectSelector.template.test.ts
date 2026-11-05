@@ -7,26 +7,21 @@ const srcPath = join(import.meta.dir, '../ProjectSelector.tsx');
 const src = readFileSync(srcPath, 'utf8');
 
 describe('Template picker — source structure', () => {
-  it('defines TEMPLATE_OPTIONS with 3 engineering entries', () => {
+  it('defines TEMPLATE_OPTIONS with 6 entries', () => {
     const matches = src.match(/\{ id: '[a-z-]+'/g);
     expect(matches).not.toBeNull();
-    // Should have exactly 3: blank, next-app, bun-lib
-    expect(matches!.length).toBe(3);
+    expect(matches!.length).toBeGreaterThanOrEqual(6);
   });
 
-  it('includes all 3 engineering template IDs', () => {
-    for (const id of ['blank', 'bun-lib', 'next-app']) {
+  it('includes all 6 required template IDs', () => {
+    for (const id of ['blank', 'bun-lib', 'next-app', 'sales-outbound', 'customer-support', 'content-marketing']) {
       expect(src).toContain(`'${id}'`);
     }
   });
 
-  it('does NOT include deprecated business-function template IDs', () => {
-    for (const id of ['sales-outbound', 'customer-support', 'content-marketing', 'customer-success', 'hiring', 'partnerships', 'pr-outreach', 'knowledge-base', 'community', 'ops']) {
-      expect(src).not.toContain(`'${id}'`);
-    }
-  });
-
   it('renders template buttons grouped by category', () => {
+    // Templates are grouped via category field on each TEMPLATE_OPTIONS entry
+    expect(src).toContain("category: 'Workflows'");
     expect(src).toContain("category: 'Build'");
   });
 
@@ -57,6 +52,9 @@ describe('Template picker — i18n keys', () => {
     'templateBlankName', 'templateBlankDesc',
     'templateBunLibName', 'templateBunLibDesc',
     'templateNextAppName', 'templateNextAppDesc',
+    'templateSalesName', 'templateSalesDesc',
+    'templateSupportName', 'templateSupportDesc',
+    'templateContentName', 'templateContentDesc',
   ] as const;
 
   for (const key of templateKeys) {
