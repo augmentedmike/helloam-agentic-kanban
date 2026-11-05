@@ -1,27 +1,8 @@
-> **After Anthropic cut off harnesses to things like this I am working on a Codex, DeepSeek, and Qwen apapters! Will be done by monday.**
+# AM — AI agent with a gated Kanban board
 
-# 🚀 AM — Not just another AI, an AI with a kanban, calendar, and more!
+AM is a digital worker that owns outcomes. It combines short + long-term memory, a Kanban state machine with gated transitions, and a git-driven execution loop where every action is a traceable commit.
 
-![GitHub Repo stars](https://img.shields.io/github/stars/augmentedmike/am-agi?style=for-the-badge&logo=github)
-![GitHub forks](https://img.shields.io/github/forks/augmentedmike/am-agi?style=for-the-badge&logo=github)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/augmentedmike/am-agi?style=for-the-badge)
-![Project Maintenance](https://img.shields.io/badge/status-active-brightgreen?style=for-the-badge)
-![Top Language](https://img.shields.io/github/languages/top/augmentedmike/am-agi?style=for-the-badge&logo=typescript)
-![MIT License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge&logo=opensourceinitiative)
-
-> **If this is useful to you — [⭐ Star the repo](https://github.com/augmentedmike/am-agi). It costs nothing and helps more people find it.**
-
-## AM - The AI that doesnt just plan, it executes
-![helloam.bot hero screenshot](docs/screenshots/helloam-hero.png)
-
-## AM - The local AI agent with a Kanban board for a brain
-![AM Board](docs/screenshots/board-demo.png)
-
-## AM - Perfect for scheduling future content and tasks
-![AM Calendar](docs/screenshots/calendar.png)
-
-
-*The AM kanban board — every task tracked, every transition gated, future work scheduled, auto de-slop - and long and short term memory with nightly reflection!*
+It manages real work: software projects, content, home logistics, research. The parts of your life that need a system but nobody ever built a real one for.
 
 ---
 
@@ -61,12 +42,12 @@ It manages real work: software projects, content, home logistics, research. The 
 
 **Mac / Linux:**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/augmentedmike/am-agi/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/augmentedmike/helloam-agentic-kanban/main/install.sh | bash
 ```
 
 **Windows:**
 ```powershell
-irm https://raw.githubusercontent.com/augmentedmike/am-agi/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/augmentedmike/helloam-agentic-kanban/main/install.ps1 | iex
 ```
 
 Both installers clone the repo, install all dependencies, build the board, register background services, and open `http://localhost:4220` when ready. Sign in with your Anthropic account in the onboarding flow and create your first card.
@@ -105,13 +86,11 @@ Docs:
 
 ## Philosophy
 
-Claude Code is the incubator, and after step 3 it becomes just a tool in AM's toolbelt. AM is the intelligence, the persistence, the memory, the "being" — Anthropic or other models are just those random thoughts in your own head. They aren't YOU.
-
-AM is a cognitive architecture, not just random thoughts. A mix of engineering (creating analogs for brain regions) and research.
+AM is a tool, not a replacement for judgment. The human sets direction; the agent executes within guardrails. Every state change is a git commit you can inspect. Memory lives on your machine. Inference goes out over HTTPS.
 
 > I got tired of agents that do things I didn't ask for. So I rewrote it.
 >
-> This is the real system — not a demo, not a toy, not another LangChain wrapper with a readme that promises AGI. Memory lives on your machine. Inference goes out over HTTPS. Every state change is a git commit. You can read all of it in an afternoon.
+> This is the real system — not a demo, not a toy, not another wrapper that promises AGI. Memory lives on your machine. Inference goes out over HTTPS. Every state change is a git commit. You can read all of it in an afternoon.
 
 ---
 
@@ -127,13 +106,13 @@ Built on ideas from:
 
 ## Contributing
 
-We welcome humans and well-behaved AI agents. See [Contributing Guide](https://github.com/augmentedmike/am-agi/discussions/14).
+We welcome humans and well-behaved AI agents. See [Contributing Guide](https://github.com/augmentedmike/helloam-agentic-kanban/discussions/14).
 
 **Help wanted:**
-- [🌏 Chinese model support (Kimi, DeepSeek, Qwen)](https://github.com/augmentedmike/am-agi/discussions/13)
-- [🐧 Linux distro testing](https://github.com/augmentedmike/am-agi/discussions/12)
-- [🪟 Windows testing](https://github.com/augmentedmike/am-agi/discussions/11)
-- [🌍 Translations (French, Portuguese, Japanese, Hindi)](https://github.com/augmentedmike/am-agi/discussions)
+- [🌏 Chinese model support (Kimi, DeepSeek, Qwen)](https://github.com/augmentedmike/helloam-agentic-kanban/discussions/13)
+- [🐧 Linux distro testing](https://github.com/augmentedmike/helloam-agentic-kanban/discussions/12)
+- [🪟 Windows testing](https://github.com/augmentedmike/helloam-agentic-kanban/discussions/11)
+- [🌍 Translations (French, Portuguese, Japanese, Hindi)](https://github.com/augmentedmike/helloam-agentic-kanban/discussions)
 
 ---
 
@@ -158,6 +137,6 @@ MIT © [augmentedmike](https://github.com/augmentedmike)
 | 💰 **低成本可选** | 支持 DeepSeek、Kimi、Qwen 等中国模型——[参与贡献](https://github.com/augmentedmike/am-agi/discussions/13) |
 
 **中文用户专区：**
-[🌏 中文本地化讨论](https://github.com/augmentedmike/am-agi/discussions/4) · [🤖 寻求帮助：支持中国模型](https://github.com/augmentedmike/am-agi/discussions/13) · [📌 发帖前请阅读](https://github.com/augmentedmike/am-agi/discussions/15)
+[🌏 中文本地化讨论](https://github.com/augmentedmike/helloam-agentic-kanban/discussions/4) · [🤖 寻求帮助：支持中国模型](https://github.com/augmentedmike/helloam-agentic-kanban/discussions/13) · [📌 发帖前请阅读](https://github.com/augmentedmike/helloam-agentic-kanban/discussions/15)
 
 ⭐ **如果觉得有用，请 Star 支持我们！Star 是我们了解有多少人在关注的重要信号。**
