@@ -1,0 +1,35 @@
+name: bun test
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+    branches: [dev, main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install board dependencies
+        run: bun install
+        working-directory: board
+
+      - name: Install agent dependencies
+        run: bun install
+        working-directory: agent
+
+      - name: Run board tests
+        run: bun test
+        working-directory: board
+
+      - name: Run agent tests
+        run: bun test
+        working-directory: agent

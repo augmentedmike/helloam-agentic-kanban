@@ -1,9 +1,9 @@
 /**
  * gates.ts — Deterministic gate worker for Kanban state transitions.
  *
- * Pure functions only. No side effects other than filesystem reads and
- * running `bun test`. The API server calls checkGate before applying
- * any card move.
+ * Runs filesystem checks, spawns `bun test`, and creates throwaway git
+ * worktrees to diff test results against the merge-base. The API server
+ * calls checkGate before applying any card move.
  */
 
 import { existsSync, readFileSync, readdirSync } from "node:fs";
@@ -130,9 +130,9 @@ async function runTests(cwd: string, env: NodeJS.ProcessEnv): Promise<Set<string
  *  ignored — only NEW failures introduced by this branch block the gate.
  *  *.e2e.test.ts files are excluded — they require real machine state. */
 async function testsPass(workDir: string): Promise<boolean> {
-  const bunDir = "/Users/michaeloneal/.bun/bin";
+  const bunDir = process.env.AM_BUN_DIR ?? "";
   const existingPath = process.env.PATH ?? "/usr/local/bin:/usr/bin:/bin";
-  const env = { ...process.env, PATH: `${bunDir}:${existingPath}` };
+  const env = { ...process.env, PATH: bunDir ? `${bunDir}:${existingPath}` : existingPath };
 
   const branchFailures = await runTests(workDir, env);
   if (branchFailures.size === 0) return true;

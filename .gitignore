@@ -65,3 +65,10 @@ am-*.md
 iter/
 apps/
 card-messages.json
+
+# Build output — do not commit
+board/tmp/
+board.db
+.next/trace
+.next/trace-build
+*.map
